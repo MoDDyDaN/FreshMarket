@@ -1,0 +1,113 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="bg-brand-50 py-14 sm:py-20">
+  <div class="max-w-7xl mx-auto px-3 sm:px-4 text-center">
+    <h1 class="text-3xl sm:text-4xl md:text-5xl font-extrabold text-brand-900 leading-tight">
+      {{ store.tagline }}
+    </h1>
+    <p class="mt-4 text-base sm:text-lg text-gray-600 max-w-2xl mx-auto">
+      Витрина интернет-магазина {{ store.store_name }}: каталог свежих продуктов,
+      честные цены и удобное расположение на карте.
+    </p>
+    <div class="mt-6 sm:mt-8 flex flex-col sm:flex-row justify-center gap-3">
+      <a href="/catalog" class="bg-brand-600 hover:bg-brand-700 text-white font-semibold
+                                px-6 py-3 rounded-xl shadow transition text-center">
+        Перейти в каталог
+      </a>
+      <a href="/contacts" class="bg-white hover:bg-gray-100 text-brand-700 font-semibold
+                                px-6 py-3 rounded-xl shadow transition border border-brand-200 text-center">
+        Как нас найти
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ======================= КАТЕГОРИИ ======================= -->
+<section class="max-w-7xl mx-auto px-3 sm:px-4 py-8 sm:py-14">
+  <h2 class="text-xl sm:text-2xl font-bold mb-4 sm:mb-6">Категории</h2>
+  <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-5">
+    {% for category in categories %}
+    <a href="/catalog?category={{ category.slug }}"
+       class="group relative rounded-2xl overflow-hidden shadow-sm hover:shadow-lg transition h-32 sm:h-44">
+      <img src="{{ category.image }}" alt="{{ category.name }}"
+           class="w-full h-full object-cover group-hover:scale-105 transition duration-300"
+           onerror="this.onerror=null; this.src='https://placehold.co/400x300/e2e8f0/64748b?text=Category';">
+      <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent"></div>
+      <span class="absolute bottom-2 left-2 right-2 sm:bottom-3 sm:left-3 text-white text-sm sm:text-base
+                   font-semibold leading-tight">{{ category.name }}</span>
+    </a>
+    {% else %}
+    <p class="col-span-full text-gray-500 text-sm sm:text-base">
+      Категории пока не загружены. Запустите catalog-service (порт 5002).
+    </p>
+    {% endfor %}
+  </div>
+</section>
+
+<!-- ======================= ХИТЫ ПРОДАЖ ======================= -->
+<section class="max-w-7xl mx-auto px-3 sm:px-4 pb-8 sm:pb-14">
+  <div class="flex items-center justify-between gap-3 mb-4 sm:mb-6">
+    <h2 class="text-xl sm:text-2xl font-bold">Хиты продаж 🔥</h2>
+    <a href="/catalog" class="text-brand-600 hover:underline font-medium text-sm sm:text-base whitespace-nowrap">Весь каталог →</a>
+  </div>
+
+  <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-5">
+    {% for product in hits %}
+      {% include "_product_card.html" %}
+    {% else %}
+    <p class="col-span-full text-gray-500 text-sm sm:text-base">
+      Хиты появятся после запуска catalog-service (порт 5002).
+    </p>
+    {% endfor %}
+  </div>
+</section>
+
+<!-- ======================= ПРЕИМУЩЕСТВА ======================= -->
+<section class="bg-white py-8 sm:py-14">
+  <div class="max-w-7xl mx-auto px-3 sm:px-4 grid gap-4 sm:gap-6 md:grid-cols-3">
+    <div class="text-center p-4 sm:p-6">
+      <div class="text-4xl mb-3">🥬</div>
+      <h3 class="font-bold mb-2">Свежесть каждый день</h3>
+      <p class="text-sm text-gray-500">Поставки овощей, фруктов и выпечки приходят каждое утро.</p>
+    </div>
+    <div class="text-center p-4 sm:p-6">
+      <div class="text-4xl mb-3">🏷️</div>
+      <h3 class="font-bold mb-2">Честные цены</h3>
+      <p class="text-sm text-gray-500">Прямые поставки без посредников — выгодная стоимость.</p>
+    </div>
+    <div class="text-center p-4 sm:p-6">
+      <div class="text-4xl mb-3">📍</div>
+      <h3 class="font-bold mb-2">Удобное расположение</h3>
+      <p class="text-sm text-gray-500">Нас легко найти на карте — координаты магазина в контактах.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ======================= КАРТА НА ГЛАВНОЙ (Google Maps) ======================= -->
+<section class="max-w-7xl mx-auto px-3 sm:px-4 py-8 sm:py-14">
+  <h2 class="text-xl sm:text-2xl font-bold mb-4 sm:mb-6">Мы на карте</h2>
+  <div class="grid gap-4 sm:gap-6 lg:grid-cols-3">
+    <div class="rounded-2xl shadow overflow-hidden h-64 sm:h-80 lg:col-span-2 bg-gray-100">
+      <iframe src="{{ map_url }}"
+              title="Карта — {{ store.store_name }}"
+              width="100%" height="100%" style="border:0;"
+              loading="lazy"
+              referrerpolicy="no-referrer-when-downgrade"
+              allowfullscreen></iframe>
+    </div>
+    <div class="bg-white rounded-2xl shadow p-4 sm:p-6 space-y-3 text-sm sm:text-base">
+      <h3 class="font-bold text-lg">{{ store.store_name }}</h3>
+      <p class="break-words">📍 {{ store.address }}</p>
+      <p>📞 <a href="tel:{{ store.phone }}" class="hover:text-brand-600">{{ store.phone }}</a></p>
+      <p class="break-words">✉️ {{ store.email }}</p>
+      <hr class="my-2">
+      <p class="text-sm"><b>Пн–Пт:</b> {{ working_hours.weekdays.split(': ')[1] if working_hours.weekdays else '—' }}</p>
+      <p class="text-sm"><b>Сб–Вс:</b> {{ working_hours.weekends.split(': ')[1] if working_hours.weekends else '—' }}</p>
+      <a href="/contacts" class="inline-block mt-2 text-brand-600 font-semibold hover:underline">
+        Подробнее в контактах →
+      </a>
+    </div>
+  </div>
+</section>
+{% endblock %}

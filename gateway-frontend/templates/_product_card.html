@@ -1,0 +1,37 @@
+{# Карточка товара для сеток на главной и в каталоге. Ожидает: product #}
+<a href="/product/{{ product.id }}"
+   class="product-card group bg-white rounded-2xl shadow-sm hover:shadow-xl transition
+          overflow-hidden border border-gray-100 flex flex-col">
+
+  <div class="relative overflow-hidden aspect-[4/3] bg-gray-100">
+    <img src="{{ product.image }}"
+         alt="{{ product.name }}"
+         loading="lazy"
+         class="w-full h-full object-cover"
+         onerror="this.onerror=null; this.src='https://placehold.co/600x450/e2e8f0/64748b?text=FreshMarket';">
+    {% if product.is_hit %}
+    <span class="absolute top-2 left-2 sm:top-3 sm:left-3 bg-red-500 text-white text-[11px] sm:text-xs
+                 font-bold px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-full shadow">ХИТ 🔥</span>
+    {% endif %}
+  </div>
+
+  <div class="p-3 sm:p-4 flex flex-col flex-1">
+    {% if product.category %}
+      <span class="text-[11px] sm:text-xs text-brand-600 font-medium uppercase tracking-wide">
+        {{ product.category.name }}
+      </span>
+    {% endif %}
+    <h3 class="text-sm sm:text-base font-semibold mt-1 leading-snug break-words
+               group-hover:text-brand-700 transition line-clamp-2">
+      {{ product.name }}
+    </h3>
+    <p class="text-xs sm:text-sm text-gray-500 mt-1">{{ product.weight }}</p>
+
+    <div class="mt-auto pt-3 flex items-center justify-between gap-2">
+      <span class="text-base sm:text-lg font-bold text-brand-700 whitespace-nowrap">{{ '%.0f' % product.price }} ₽</span>
+      <span class="hidden sm:inline-block text-xs bg-brand-50 text-brand-700 px-2 py-1 rounded-lg font-medium">
+        Подробнее →
+      </span>
+    </div>
+  </div>
+</a>

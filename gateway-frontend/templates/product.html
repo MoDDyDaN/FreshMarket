@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto px-3 sm:px-4 py-6 sm:py-10">
+
+  <!-- Хлебные крошки -->
+  <nav class="text-xs sm:text-sm text-gray-500 mb-4 sm:mb-6 flex flex-wrap gap-x-1">
+    <a href="/" class="hover:text-brand-600">Главная</a>
+    <span>/</span>
+    <a href="/catalog" class="hover:text-brand-600">Каталог</a>
+    <span>/</span>
+    <a href="/catalog?category={{ product.category.slug }}" class="hover:text-brand-600 break-words">
+      {{ product.category.name }}
+    </a>
+    <span>/</span>
+    <span class="text-gray-800 font-medium break-words">{{ product.name }}</span>
+  </nav>
+
+  <div class="bg-white rounded-2xl sm:rounded-3xl shadow-sm border border-gray-100 overflow-hidden">
+    <div class="grid lg:grid-cols-2">
+
+      <!-- Картинка -->
+      <div class="relative bg-gray-100 min-h-[220px] sm:min-h-[320px]">
+        <img src="{{ product.image }}" alt="{{ product.name }}"
+             class="w-full h-full object-cover"
+             onerror="this.onerror=null; this.src='https://placehold.co/800x600/e2e8f0/64748b?text=FreshMarket';">
+        {% if product.is_hit %}
+        <span class="absolute top-3 left-3 bg-red-500 text-white text-xs sm:text-sm font-bold
+                     px-2.5 py-1 sm:px-3 sm:py-1.5 rounded-full shadow">ХИТ ПРОДАЖ 🔥</span>
+        {% endif %}
+      </div>
+
+      <!-- Информация -->
+      <div class="p-4 sm:p-6 lg:p-8">
+        <a href="/catalog?category={{ product.category.slug }}"
+           class="inline-block text-[11px] sm:text-xs font-semibold uppercase tracking-wide text-brand-600
+                  bg-brand-50 px-3 py-1 rounded-full break-words">
+          {{ product.category.name }}
+        </a>
+
+        <h1 class="text-2xl sm:text-3xl font-extrabold mt-3 break-words">{{ product.name }}</h1>
+
+        <div class="flex flex-wrap items-center gap-x-4 gap-y-1 mt-3 sm:mt-4 text-xs sm:text-sm text-gray-500">
+          <span>⚖️ {{ product.weight }}</span>
+          {% if product.origin %}
+          <span class="break-words">🌍 Происхождение: {{ product.origin }}</span>
+          {% endif %}
+        </div>
+
+        <div class="mt-4 sm:mt-6 flex items-baseline gap-3">
+          <span class="text-3xl sm:text-4xl font-extrabold text-brand-700 whitespace-nowrap">{{ '%.0f' % product.price }} ₽</span>
+          <span class="text-gray-400 text-sm">за {{ product.weight }}</span>
+        </div>
+
+        <p class="mt-4 sm:mt-6 text-gray-600 leading-relaxed text-sm sm:text-base">{{ product.description }}</p>
+
+        <div class="mt-6 sm:mt-8 flex flex-col sm:flex-row gap-3">
+          <a href="/catalog?category={{ product.category.slug }}"
+             class="bg-brand-600 hover:bg-brand-700 text-white font-semibold px-5 sm:px-6 py-3 rounded-xl
+                    transition text-center break-words">
+            ← Другие товары «{{ product.category.name }}»
+          </a>
+          <a href="/catalog"
+             class="bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold px-5 sm:px-6 py-3 rounded-xl
+                    transition text-center whitespace-nowrap">
+            Весь каталог
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Похожие товары -->
+  {% if related %}
+  <section class="mt-8 sm:mt-12">
+    <h2 class="text-xl sm:text-2xl font-bold mb-4 sm:mb-5">Похожие товары</h2>
+    <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-5">
+      {% for product in related %}
+        {% include "_product_card.html" %}
+      {% endfor %}
+    </div>
+  </section>
+  {% endif %}
+
+</div>
+{% endblock %}

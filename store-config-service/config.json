@@ -1,0 +1,25 @@
+{
+  "store_name": "FreshMarket",
+  "tagline": "Свежие продукты каждый день",
+  "address": "г. Москва, ул. Разработчиков, д. 1, к. 2",
+  "phone": "+7 (999) 123-45-67",
+  "email": "hello@freshmarket.demo",
+  "working_hours": {
+    "weekdays": "Пн–Пт: 08:00 – 22:00",
+    "weekends": "Сб–Вс: 09:00 – 23:00",
+    "delivery": "Ежедневно: 09:00 – 21:00"
+  },
+  "latitude": 55.751244,
+  "longitude": 37.618423,
+  "google_maps_api_key": "",
+  "social_links": {
+    "telegram": "",
+    "max": ""
+  },
+  "supplier_link": "",
+  "developer": {
+    "name": "Ashot",
+    "role": "System Architect / Backend Developer"
+  },
+  "service_port": 5001
+}

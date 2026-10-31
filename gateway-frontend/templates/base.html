@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}{{ page_title or store.store_name }} — {{ store.store_name }}{% endblock %}</title>
+
+  <!-- Tailwind CSS (CDN) -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50:  '#f0fdf4', 100: '#dcfce7', 500: '#22c55e', 600: '#16a34a',
+              700: '#15803d', 800: '#166534', 900: '#14532d'
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Google Maps подключается через iframe прямо в шаблонах (см. map_url) -->
+
+  <style>
+    body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; }
+    .product-card:hover img { transform: scale(1.05); }
+    .product-card img { transition: transform .3s ease; }
+    /* Длинные строки (адреса, ссылки, code) не должны ломать вёрстку на узких экранах */
+    code, kbd { word-break: break-word; overflow-wrap: anywhere; }
+    summary::-webkit-details-marker { display: none; }
+  </style>
+</head>
+<body class="bg-gray-50 text-gray-800 min-h-screen flex flex-col overflow-x-hidden">
+
+  <!-- ======================= НАВИГАЦИЯ ======================= -->
+  <header class="bg-white shadow-sm sticky top-0 z-50">
+    <!-- Плашка слева: предложение для ресторанов.
+         Ссылка — поле supplier_link в store-config-service/config.json -->
+    <a href="{{ supplier_link or '#' }}"
+       {% if not supplier_link %}title="Ссылка появится скоро"{% endif %}
+       class="block bg-brand-700 hover:bg-brand-800 transition">
+      <span class="max-w-7xl mx-auto px-3 sm:px-4 py-2 flex flex-wrap items-center gap-x-2 gap-y-0.5
+                   text-[13px] sm:text-sm font-medium text-white leading-snug">
+        <span aria-hidden="true">🤝</span>
+        <span class="underline decoration-white/40 underline-offset-2">
+          Ищите поставщика в ресторан? — пишите нам
+        </span>
+        <span aria-hidden="true">→</span>
+      </span>
+    </a>
+
+    <!-- Гамбургер-переключатель: чекбокс + peer, без JavaScript -->
+    <input type="checkbox" id="nav-toggle" class="peer hidden" aria-hidden="true">
+
+    <div class="max-w-7xl mx-auto px-3 sm:px-4 py-2.5 sm:py-3 flex items-center justify-between gap-2">
+      <a href="/" class="flex items-center gap-2 min-w-0">
+        <span class="text-2xl sm:text-3xl">🛒</span>
+        <span class="text-lg sm:text-xl font-extrabold text-brand-700 truncate">{{ store.store_name }}</span>
+      </a>
+
+      <!-- Компьютерная навигация -->
+      <nav class="hidden md:flex items-center gap-6 font-medium">
+        <a href="/" class="hover:text-brand-600 transition">Главная</a>
+        <a href="/catalog" class="hover:text-brand-600 transition">Каталог</a>
+        <a href="/contacts" class="hover:text-brand-600 transition">Контакты</a>
+      </nav>
+
+      <div class="flex items-center gap-2 sm:gap-4 shrink-0">
+        <a href="tel:{{ store.phone }}" class="hidden sm:flex items-center gap-2 text-sm font-semibold text-brand-700 whitespace-nowrap">
+          📞 {{ store.phone }}
+        </a>
+        <!-- Логотипы соцсетей (ссылки из config.json → social_links) -->
+        {% include "_social_icons.html" %}
+
+        <!-- Кнопка меню (только на телефонах и планшетах) -->
+        <label for="nav-toggle"
+               class="md:hidden flex items-center justify-center w-9 h-9 rounded-full
+                      bg-gray-100 hover:bg-gray-200 active:bg-gray-300 cursor-pointer select-none"
+               aria-label="Открыть меню">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
+               stroke-linecap="round" class="w-5 h-5 text-gray-700">
+            <path d="M4 7h16M4 12h16M4 17h16"/>
+          </svg>
+        </label>
+      </div>
+    </div>
+
+    <!-- Выпадающее меню для телефонов (выезжает по гамбургеру) -->
+    <div class="flex flex-col overflow-hidden max-h-0 peer-checked:max-h-80 px-3 sm:px-4
+                transition-[max-height] duration-300 ease-out
+                border-t-0 peer-checked:border-t border-gray-100 bg-white md:hidden">
+      <a href="/" class="py-3 font-medium border-b border-gray-50 hover:text-brand-600 active:text-brand-700">Главная</a>
+      <a href="/catalog" class="py-3 font-medium border-b border-gray-50 hover:text-brand-600 active:text-brand-700">Каталог</a>
+      <a href="/contacts" class="py-3 font-medium border-b border-gray-50 hover:text-brand-600 active:text-brand-700">Контакты</a>
+      <a href="tel:{{ store.phone }}" class="py-3 font-semibold text-brand-700">📞 {{ store.phone }}</a>
+    </div>
+  </header>
+
+  <!-- ======================= КОНТЕНТ ======================= -->
+  <main class="flex-1">
+    {% block content %}{% endblock %}
+  </main>
+
+  <!-- ======================= ПОДВАЛ ======================= -->
+  <footer class="bg-brand-900 text-brand-100 mt-12 sm:mt-16">
+    <div class="max-w-7xl mx-auto px-3 sm:px-4 py-8 sm:py-10 grid gap-6 sm:gap-8 sm:grid-cols-2 lg:grid-cols-3">
+      <div>
+        <div class="flex items-center gap-2 mb-3">
+          <span class="text-2xl">🛒</span>
+          <span class="text-lg font-bold text-white">{{ store.store_name }}</span>
+        </div>
+        <p class="text-sm text-brand-200">{{ store.tagline }}</p>
+        <p class="text-xs text-brand-300 mt-4">
+          Демонстрационная витрина на микросервисной архитектуре.<br>
+          Разработчик: {{ store.developer.name }} — {{ store.developer.role }}
+        </p>
+      </div>
+
+      <div>
+        <h4 class="font-semibold text-white mb-3">Навигация</h4>
+        <ul class="space-y-2 text-sm">
+          <li><a href="/" class="hover:text-white transition">Главная</a></li>
+          <li><a href="/catalog" class="hover:text-white transition">Каталог</a></li>
+          <li><a href="/contacts" class="hover:text-white transition">Контакты</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h4 class="font-semibold text-white mb-3">Контакты</h4>
+        <ul class="space-y-2 text-sm break-words">
+          <li>📍 {{ store.address }}</li>
+          <li>📞 <a href="tel:{{ store.phone }}" class="hover:text-white transition">{{ store.phone }}</a></li>
+          <li>✉️ {{ store.email }}</li>
+          <li>🕒 {{ working_hours.weekdays }}</li>
+        </ul>
+      </div>
+    </div>
+    <div class="border-t border-brand-800 py-4 px-3 text-center text-xs text-brand-300">
+      © 2026 {{ store.store_name }} · Витрина каталога (демо). Заказы не оформляются.
+    </div>
+  </footer>
+
+</body>
+</html>

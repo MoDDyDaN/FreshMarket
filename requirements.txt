@@ -1,0 +1,5 @@
+# Общие зависимости всех микросервисов проекта food_store_microservices.
+# Альтернатива — ставить requirements.txt из каждой папки сервиса по отдельности.
+flask>=3.0
+sqlalchemy>=2.0
+requests>=2.31

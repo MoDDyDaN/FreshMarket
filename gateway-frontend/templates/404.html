@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="max-w-3xl mx-auto px-3 sm:px-4 py-16 sm:py-24 text-center">
+  <div class="text-6xl sm:text-7xl mb-6">🧺</div>
+  <h1 class="text-3xl sm:text-4xl font-extrabold mb-3">404 — товар не найден</h1>
+  <p class="text-gray-500 mb-6 sm:mb-8 text-sm sm:text-base">
+    Возможно, страница была удалена или товар закончился.
+    Загляните в каталог — там точно есть свежие продукты!
+  </p>
+  <a href="/catalog" class="bg-brand-600 hover:bg-brand-700 text-white font-semibold
+                            px-6 py-3 rounded-xl transition inline-block">
+    Перейти в каталог
+  </a>
+</div>
+{% endblock %}

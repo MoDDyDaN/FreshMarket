@@ -1,0 +1,32 @@
+# Запуск всех микросервисов через Docker:
+#   docker compose up --build
+# Витрина будет доступна на http://localhost:5000
+services:
+
+  store-config-service:
+    build: ./store-config-service
+    container_name: store-config-service
+    ports:
+      - "5001:5001"
+
+  catalog-service:
+    build: ./catalog-service
+    container_name: catalog-service
+    ports:
+      - "5002:5002"
+    volumes:
+      # база SQLite живёт вне контейнера — не теряется при пересборке
+      - ./catalog-service/catalog.db:/app/catalog.db
+
+  gateway-frontend:
+    build: ./gateway-frontend
+    container_name: gateway-frontend
+    ports:
+      - "5000:5000"
+    environment:
+      # внутри docker-compose сервисы обращаются по именам контейнеров
+      - CONFIG_SERVICE_URL=http://store-config-service:5001
+      - CATALOG_SERVICE_URL=http://catalog-service:5002
+    depends_on:
+      - store-config-service
+      - catalog-service

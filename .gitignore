@@ -1,0 +1,17 @@
+# --- Окружение ---
+.venv/
+venv/
+__pycache__/
+*.pyc
+*.pyo
+
+# --- SQLite (генерируется сидером) ---
+catalog-service/catalog.db
+
+# --- Логи и временные файлы ---
+_logs/
+*.log
+
+# --- Системные ---
+.DS_Store
+Thumbs.db
